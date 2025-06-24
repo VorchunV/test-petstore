@@ -70,5 +70,24 @@ def tests_create_new_order(order):
     print(f"Ошибка валидации: {err.message}")
 
 # Фактический результат: Новый заказ размещен, код статуса 200, jsonSchema соответствует.
-
 tests_create_new_order(order4)
+
+# Создание теста для получения заказа по ID (GET /store/order/{orderId})
+#Название тест-кейса: создание тест-функции для проверки получения заказа по его id
+# Описание: Тест проверяет возможность получения заказа путем отправки GET-запроса на API PetStore Swagger по указанному адресу
+def tests_get_order_by_id(orderId):
+# Шаги выполнения: Отправляем POST-запрос на API PetStore Swagger по указанному адресу передаем номер заказа
+    response = requests.get(f'https://petstore.swagger.io/v2/store/order/{orderId}')
+  
+#Ожидаемый результат: HTTP-статус ответа 200,  совпадение номера полученного заказа с запрошенным номером
+    assert response.status_code == 200, f"Ошибка получения заказа, статус: {response.status_code}, сообщение: {response.text}"
+
+    receivedOrder = response.json()
+    
+    if receivedOrder['id'] == orderId:
+        print(f"Номер заказа совпадает с запрашиваемым. Номер заказа {receivedOrder['id']}")
+    else:
+        print(f"Неверный ID заказа: ожидалось {orderId}, получено {receivedOrder['id']}")
+
+# Фактический результат: HTTP-статус ответа 200, ID номера заказа совпадает.
+tests_get_order_by_id(8)
