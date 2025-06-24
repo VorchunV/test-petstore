@@ -1,8 +1,11 @@
 import requests
+import random
 import pytest
 import json
 import jsonschema
 from jsonschema import validate
+from selenium import webdriver
+driver = webdriver.Chrome() 
 
 order1 = {
       "id": 1,
@@ -90,7 +93,7 @@ def tests_get_order_by_id(orderId):
         print(f"Неверный ID заказа: ожидалось {orderId}, получено {receivedOrder['id']}")
 
 # Фактический результат: HTTP-статус ответа 200, ID номера заказа совпадает.
-tests_get_order_by_id(8)
+tests_get_order_by_id(4)
 
 #Напишите тест для удаления заказа (DELETE /store/order/{orderId})
 #Название тест-кейса: Функция для тестирования удаления заказа по его номеру
@@ -182,5 +185,4 @@ def negativeTests_delete_order():
   response = requests.delete(f'https://petstore.swagger.io/v2/store/order/{idOrder}')
   # Убеждаемся, что сервер вернул соответствующий код ошибки (HTTP 400 Bad Request)
   assert response.status_code == 400,f"Код ошибки{response.status_code}, текст ошибки{response.text}"
-
-def negativeTests_delete_order()
+negativeTests_delete_order()
