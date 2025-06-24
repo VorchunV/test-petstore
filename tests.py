@@ -91,3 +91,26 @@ def tests_get_order_by_id(orderId):
 
 # Фактический результат: HTTP-статус ответа 200, ID номера заказа совпадает.
 tests_get_order_by_id(8)
+
+#Напишите тест для удаления заказа (DELETE /store/order/{orderId})
+#Название тест-кейса: Функция для тестирования удаления заказа по его номеру
+# Описание: Тест проверяет возможность получения заказа путем отправки delete-запроса на API PetStore Swagger по указанному адресу
+def testsDeleteOrder(orderId):
+
+# Шаги выполнения: Проверяем что заказ есть в базе. Отправляем DELETE-запрос для удаления заказа по заданному ID
+
+  positiveResponse = requests.get(f'https://petstore.swagger.io/v2/store/order/{orderId}') 
+  response = requests.delete(f'https://petstore.swagger.io/v2/store/order/{orderId}')
+
+#Ожидаемый результат: HTTP-статус ответа 200 OK, совпадение возвращённого номера заказа с исходным значением
+  assert positiveResponse.status_code == 200,f"Заказа не существует, статус: {response.status_code}, сообщение: {response.text}"
+
+  assert response.status_code == 200,f"Ошибка удаления заказа, статус: {response.status_code}, сообщение: {response.text}"
+  
+  infoId = response.json()   
+  if infoId["message"] == str(orderId): 
+   print("Номер заказа для удаления совпадает") 
+  else:     
+    print("Данные некорректны")  
+
+testsDeleteOrder(4)
