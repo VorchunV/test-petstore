@@ -125,7 +125,6 @@ testsDeleteOrder(4)
 # Цель теста: проверить поведение API при попытке получить заказ с неверным/некорректным ID. 
 
 invalidId = ["aaa", -1, 0, 99, 1.3]
-
 def negativeTests_get_order():
   idOrder = random.choice(invalidId)
   # Выполняем GET-запрос на получение заказа с неправильным ID
