@@ -114,3 +114,73 @@ def testsDeleteOrder(orderId):
     print("Данные некорректны")  
 
 testsDeleteOrder(4)
+#______________________________________________________________________________________________________
+
+# . Добавьте негативные тесты (некорректные ID, неверные форматы данных)
+
+# Функция для негативного тестирования метода получения заказа по неверному ID
+# Цель теста: проверить поведение API при попытке получить заказ с неверным/некорректным ID. 
+
+invalidId = ["aaa", -1, 0, 99, 1.3]
+
+def negativeTests_get_order():
+  idOrder = random.choice(invalidId)
+  # Выполняем GET-запрос на получение заказа с неправильным ID
+  response = requests.get(f'https://petstore.swagger.io/v2/store/order/{idOrder}')
+  # Убеждаемся, что сервер вернул соответствующий код ошибки (HTTP 400 Bad Request)
+  assert response.status_code == 400,f"Код ошибки{response.status_code}, текст ошибки{response.text}"
+
+negativeTests_get_order()
+
+# Цель теста: Проверить ситуацию, когда передаваемые данные некорректны или неполны, что должно привести к ошибкам со стороны API 
+# Создание недействительного заказа (отсутствует поле petId и quantity)
+InvalidOrder = {
+      "id": 1,
+      "shipDate": "2023-07-08T12:00:00Z",
+      "status": "placed",
+      "complete": "true"
+    }
+
+def negative_tests_create_invalid_order():
+    # Шаги выполнения: Отправляем POST-запрос на API PetStore Swagger по указанному адресу
+    url = "https://petstore.swagger.io/v2/store/order"
+
+    # Ожидаемый результат: Статус код НЕ равен 200 (обычно это 400 — bad request)
+    response = requests.post(url, data=json.dumps(InvalidOrder), headers={'Content-Type': 'application/json'})
+    assert response.status_code == 400, f"Ожидалась ошибка создания заказа, статус: {response.status_code}, сообщение: {response.text}"
+
+negative_tests_create_invalid_order()
+order2 = {
+      "id": 2,
+      "petId": 102,
+      "quantity": 1,
+      "shipDate": "2023-07-10T10:00:00Z",
+      "status": "approved",
+      "complete": "true"
+    }
+
+# Цель теста: Проверка запроса без необходимого заголовка 'Content-Type'
+def negative_tests_create_without_headers(ValidOrder):
+    # Шаги выполнения: Отправляем POST-запрос на API PetStore Swagger по указанному адресу
+    url = "https://petstore.swagger.io/v2/store/order"
+
+    # Ожидаемый результат: Статус код 400 — bad request или 415 - Unsupported Media Type
+    response = requests.post(url, data=json.dumps(ValidOrder))  # Заголовок 'Content-Type' отсутствует!
+    assert response.status_code == 400 or response.status_code == 415, \
+        f"Ожидался статус 400 (Bad Request) или 415 (Unsupported Media Type), полученный статус: {response.status_code}, сообщение: {response.text}"
+
+
+negative_tests_create_without_headers(order2)
+
+# Цель теста: проверить поведение API при попытке удалить заказ с неверным/некорректным ID. 
+
+invalidId = ["aaa", -1, 0, 99, 1.3]
+
+def negativeTests_delete_order():
+  idOrder = random.choice(invalidId)
+  # Выполняем GET-запрос на получение заказа с неправильным ID
+  response = requests.delete(f'https://petstore.swagger.io/v2/store/order/{idOrder}')
+  # Убеждаемся, что сервер вернул соответствующий код ошибки (HTTP 400 Bad Request)
+  assert response.status_code == 400,f"Код ошибки{response.status_code}, текст ошибки{response.text}"
+
+def negativeTests_delete_order()
