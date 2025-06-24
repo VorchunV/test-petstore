@@ -37,3 +37,38 @@ order4 = {
       "status": "placed",
       "complete": "false"
     }
+# 1. Тесты для размещения нового заказa
+# Название тест-кейса: Проверка размещения нового заказа
+
+# Описание: Тест проверяет возможность для размещения нового заказа (POST /store/order) в PetStore
+
+
+def tests_create_new_order(order):
+  # Шаги выполнения:Отправляем POST-запрос на API PetStore Swagger по указанному адресу
+  url = "https://petstore.swagger.io/v2/store/order"
+  
+  # Ожидаемый результат: Статус код 200, структура JSON-файла соответствует.
+  response = requests.post(url, data=json.dumps(order), headers={'Content-Type': 'application/json'})
+  assert response.status_code == 200,f"Ошибка создания заказа, статус: {response.status_code}, сообщение: {response.text}"
+
+  response_json = response.json()
+  print(response.json())
+
+  schema =  {
+  "id": "integer",
+  "petId": "integer",
+  "quantity"	: "integer",
+  "shipDate" : 	"string",
+  "status" :	"string",
+  "complete" :"boolean"
+   }
+
+  try:
+    validate(instance=order, schema=schema)
+    print("Данные валидны")
+  except jsonschema.exceptions.ValidationError as err:
+    print(f"Ошибка валидации: {err.message}")
+
+# Фактический результат: Новый заказ размещен, код статуса 200, jsonSchema соответствует.
+
+tests_create_new_order(order4)
